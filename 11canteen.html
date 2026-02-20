@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上海交通大学食堂社区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .canteen-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .canteen-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        .canteen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .canteen-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .canteen-title:hover {
+            color: #3498db;
+        }
+
+        .canteen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .canteen-toggle-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .canteen-toggle-btn:hover {
+            background: #c0392b;
+        }
+
+        .stalls-container {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .stalls-container.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .stalls-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stall {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid #e74c3c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stall:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .stall-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .stall-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        .toggle-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #2980b9;
+        }
+
+        .dishes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .dishes.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .stall-rating {
+            background: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .dishes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .dish {
+            background: #ecf0f1;
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dish:hover {
+            background: #d5dbdb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .dish-name {
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 5px;
+        }
+
+        .dish-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .dish-attributes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .attribute-tag {
+            background: #3498db;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+
+        .spicy-tag {
+            background: #e74c3c;
+        }
+
+        .heat-tag {
+            background: #f39c12;
+        }
+
+        .onion-tag {
+            background: #27ae60;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .rating-display {
+            background: #f39c12;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .comment-rating {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .comment-date {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .comment-text {
+            color: #34495e;
+            line-height: 1.5;
+        }
+
+        .add-comment {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .add-comment h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment-input {
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .rating-input {
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .submit-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .search-bar {
+            margin: 20px 30px;
+            text-align: center;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1.1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #3498db;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .filter-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group h4 {
+            color: #34495e;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #2980b9;
+        }
+
+        .price-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .price-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .price-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .rating-range {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .rating-input {
+            width: 60px;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .rating-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .stats {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stats h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .canteen-grid {
+                padding: 15px;
+            }
+            
+            .stalls-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .canteen-title {
+                font-size: 1.5em;
+            }
+            
+            .dishes {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stalls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ 上海交通大学食堂社区</h1>
+            <p>发现美食，分享体验，让每一餐都更精彩</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索菜品、摊位或餐饮大楼..." id="searchInput">
+        </div>
+
+        <div class="filter-section">
+            <h3>🔍 筛选条件</h3>
+            
+            <div class="filter-group">
+                <h4>🌶️ 辣度筛选</h4>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterBySpicy('all')">全部</button>
+                    <button class="filter-btn" onclick="filterBySpicy('不辣')">不辣</button>
+                    <button class="filter-btn" onclick="filterBySpicy('微辣')">微辣</button>
+                    <button class="filter-btn" onclick="filterBySpicy('中辣')">中辣</button>
+                    <button class="filter-btn" onclick="filterBySpicy('麻辣')">麻辣</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>⭐ 评分筛选</h4>
+                <div class="rating-range">
+                    <span>评分范围：</span>
+                    <input type="number" class="rating-input" id="minRating" placeholder="最低" min="1" max="5" step="0.1">
+                    <span>-</span>
+                    <input type="number" class="rating-input" id="maxRating" placeholder="最高" min="1" max="5" step="0.1">
+                    <button class="filter-btn" onclick="filterByRating()">筛选评分</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>💰 价格筛选</h4>
+                <div class="price-range">
+                    <span>价格范围：</span>
+                    <input type="number" class="price-input" id="minPrice" placeholder="最低" min="0" step="1">
+                    <span>元 -</span>
+                    <input type="number" class="price-input" id="maxPrice" placeholder="最高" min="0" step="1">
+                    <span>元</span>
+                    <button class="filter-btn" onclick="filterByPrice()">筛选价格</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-buttons">
+                    <button class="filter-btn" onclick="clearAllFilters()">清除所有筛选</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h3>📊 食堂统计</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <strong>餐饮大楼</strong><br>
+                    <span style="color: #3498db; font-size: 1.5em;">7</span> 栋
+                </div>
+                <div class="stat-item">
+                    <strong>摊位总数</strong><br>
+                    <span style="color: #e74c3c; font-size: 1.5em;">35</span> 个
+                </div>
+                <div class="stat-item">
+                    <strong>菜品总数</strong><br>
+                    <span style="color: #f39c12; font-size: 1.5em;">156</span> 道
+                </div>
+                <div class="stat-item">
+                    <strong>平均评分</strong><br>
+                    <span style="color: #27ae60; font-size: 1.5em;">3.0</span> ⭐
+                </div>
+            </div>
+        </div>
+
+        <div class="canteen-grid" id="canteenGrid">
+            <!-- 餐饮大楼将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <!-- 评论弹窗 -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"></div>
+                <div class="rating-display" id="modalRating"></div>
+            </div>
+            <div class="comments-section">
+                <h4>💬 用户评价</h4>
+                <div id="commentsList"></div>
+                <div class="add-comment">
+                    <h4>✍️ 添加评价</h4>
+                    <form class="comment-form" id="commentForm">
+                        <textarea class="comment-input" id="commentText" placeholder="分享你的用餐体验..." required></textarea>
+                        <select class="rating-input" id="commentRating" required>
+                            <option value="">选择评分</option>
+                            <option value="1">1⭐ - 很差</option>
+                            <option value="2">2⭐ - 一般</option>
+                            <option value="3">3⭐ - 还行</option>
+                            <option value="4">4⭐ - 不错</option>
+                            <option value="5">5⭐ - 很棒</option>
+                        </select>
+                        <button type="submit" class="submit-btn">提交评价</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 辣度选项
+        const spicyLevels = ['不辣', '微辣', '中辣', '麻辣'];
+        
+        // 其他属性选项
+        const attributes = ['加葱', '高热量', '素食', '清真', '低盐', '无糖', '高蛋白', '低脂'];
+
+        // 生成随机属性
+        function getRandomAttributes() {
+            const numAttributes = Math.floor(Math.random() * 3) + 1; // 1-3个属性
+            const shuffled = attributes.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, numAttributes);
+        }
+
+        // 生成随机辣度
+        function getRandomSpicy() {
+            return spicyLevels[Math.floor(Math.random() * spicyLevels.length)];
+        }
+
+        // 生成随机评论
+        function generateRandomComments() {
+            const comments = [
+                '味道不错，分量足！',
+                '价格实惠，性价比高',
+                '服务态度很好',
+                '菜品新鲜，口感好',
+                '排队时间有点长',
+                '环境干净整洁',
+                '推荐尝试！',
+                '下次还会再来',
+                '味道一般，没有特别惊艳',
+                '分量有点少，吃不饱',
+                '价格偏贵，性价比不高',
+                '味道很正宗，推荐！',
+                '服务速度很快',
+                '环境有点吵',
+                '菜品很新鲜，口感不错',
+                '排队人很多，等了好久',
+                '味道还可以，中规中矩',
+                '分量刚好，价格合理',
+                '服务态度一般',
+                '环境很干净，用餐体验好',
+                '味道不错，值得一试',
+                '价格有点贵，但味道好',
+                '分量很足，性价比高',
+                '服务很周到，很满意',
+                '环境不错，适合聚餐',
+                '味道一般，没有特色',
+                '分量太少，不够吃',
+                '价格合理，味道不错',
+                '服务态度很好，很贴心',
+                '环境干净，用餐舒适'
+            ];
+            
+            const authors = ['小明', '小红', '小李', '小王', '小张', '小刘', '小陈', '小杨', '小赵', '小孙', '小周', '小吴', '小郑', '小冯', '小陈', '小褚', '小卫', '小蒋', '小沈', '小韩'];
+            
+            const numComments = Math.floor(Math.random() * 5) + 3; // 3-7条评论
+            const result = [];
+            
+            for (let i = 0; i < numComments; i++) {
+                result.push({
+                    author: authors[Math.floor(Math.random() * authors.length)],
+                    rating: Math.floor(Math.random() * 5) + 1, // 1-5整数评分
+                    text: comments[Math.floor(Math.random() * comments.length)],
+                    date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()
+                });
+            }
+            
+            return result;
+        }
+
+        // 计算菜品平均评分
+        function calculateDishRating(comments) {
+            if (!comments || comments.length === 0) return 3.0;
+            const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
+            return (totalRating / comments.length).toFixed(1);
+        }
+
+        // 计算摊位平均评分
+        function calculateStallRating(dishes) {
+            if (!dishes || dishes.length === 0) return 3.0;
+            const totalRating = dishes.reduce((sum, dish) => sum + parseFloat(dish.rating), 0);
+            return (totalRating / dishes.length).toFixed(1);
+        }
+
+        // 生成菜品数据
+        function generateDishes() {
+            const dishes = [];
+            for (let i = 1; i <= 4; i++) {
+                const comments = generateRandomComments();
+                dishes.push({
+                    name: `菜品${i}`,
+                    price: Math.floor(Math.random() * 20) + 5, // 5-24元随机价格
+                    rating: calculateDishRating(comments),
+                    spicy: getRandomSpicy(),
+                    attributes: getRandomAttributes(),
+                    comments: comments
+                });
+            }
+            return dishes;
+        }
+
+        // 生成摊位数据
+        function generateStalls() {
+            const stalls = [];
+            for (let i = 1; i <= 5; i++) {
+                const dishes = generateDishes();
+                stalls.push({
+                    name: `摊位${i}`,
+                    rating: calculateStallRating(dishes),
+                    dishes: dishes,
+                    comments: generateRandomComments(),
+                    collapsed: true  // 默认全部折叠
+                });
+            }
+            return stalls;
+        }
+
+        // 生成餐饮大楼数据
+        function generateCanteens() {
+            const canteens = [];
+            for (let i = 1; i <= 7; i++) {
+                if (i === 1) {
+                    // 第一餐饮大楼使用真实数据
+                    canteens.push({
+                        name: `第${i}餐饮大楼`,
+                        stalls: generateFirstCanteenStalls(),
+                        collapsed: true
+                    });
+                } else {
+                    // 其他餐饮大楼使用随机数据
+                    canteens.push({
+                        name: `第${i}餐饮大楼`,
+                        stalls: generateStalls(),
+                        collapsed: true
+                    });
+                }
+            }
+            return canteens;
+        }
+
+        // 生成第一餐饮大楼的菜品数据（带评论和评分计算）
+        function generateFirstCanteenDish(name, price, spicy, attributes) {
+            const comments = generateRandomComments();
+            return {
+                name: name,
+                price: price,
+                rating: calculateDishRating(comments),
+                spicy: spicy,
+                attributes: attributes,
+                comments: comments
+            };
+        }
+
+        // 生成第一餐饮大楼的摊位数据
+        function generateFirstCanteenStalls() {
+            const stalls = [];
+            
+            // 摊位1：1-1-1
+            const stall1Dishes = [
+                generateFirstCanteenDish('牛肉粉丝汤', 15, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('牛杂粉丝汤', 15, '不辣', ['高蛋白', '咸']),
+                generateFirstCanteenDish('香酥脆饼', 2, '不辣', ['低脂', '咸']),
+                generateFirstCanteenDish('葱油饼', 2, '不辣', ['低脂', '咸']),
+                generateFirstCanteenDish('牛肉粉丝饼', 3, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-1',
+                rating: calculateStallRating(stall1Dishes),
+                dishes: stall1Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位2：1-1-2
+            const stall2Dishes = [
+                generateFirstCanteenDish('香拌土豆粉香拌二掺', 16, '不辣', ['低脂', '咸']),
+                generateFirstCanteenDish('招牌醇香土豆粉', 16, '微辣', ['低脂', '咸']),
+                generateFirstCanteenDish('经典麻辣土豆粉', 16, '微辣', ['低脂', '咸']),
+                generateFirstCanteenDish('番茄土豆粉', 16, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('特色麻酱土豆粉', 17, '微辣', ['低脂', '咸']),
+                generateFirstCanteenDish('百香果酸汤土豆粉', 18, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('生烫牛肉土豆粉', 19, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-2',
+                rating: calculateStallRating(stall2Dishes),
+                dishes: stall2Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位3：1-1-3
+            const stall3Dishes = [
+                generateFirstCanteenDish('雪菜肉丝面', 10, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('笋尖肉末面', 10, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('番茄鸡蛋面', 10, '不辣', ['高蛋白', '低脂', '甜']),
+                generateFirstCanteenDish('肉末面', 12, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('炸酱面', 12, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('辣子鸡面', 12, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('卤肉面', 12, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('鱼香肉丝面', 12, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('香辣牛肉面', 16, '微辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-3',
+                rating: calculateStallRating(stall3Dishes),
+                dishes: stall3Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位4：1-1-4
+            const stall4Dishes = [
+                generateFirstCanteenDish('鱼香肉丝套餐饭', 13, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('青椒肉丝套餐饭', 13, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('盐焗鸡腿套餐饭', 13, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('酸辣鸡杂套餐饭', 13, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('奥尔良腿排套餐饭', 13, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('小炒肉套餐饭', 14, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('辣子鸡套餐饭', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('咕咾肉套餐饭', 14, '不辣', ['高蛋白', '低脂', '甜']),
+                generateFirstCanteenDish('鸡蛋肉末套餐饭', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('椒盐小酥肉套餐饭', 15, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('香酥鸡排套餐饭', 15, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('红烧肉套餐饭', 15, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-4',
+                rating: calculateStallRating(stall4Dishes),
+                dishes: stall4Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位5：1-1-5
+            const stall5Dishes = [
+                generateFirstCanteenDish('沙茶牛肉炒饭', 15, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('扬州炒饭', 10, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('广式腊肠炒饭', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('韩式泡菜五花肉炒饭', 16, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('橄榄菜虾仁炒饭', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('牛肉炒面', 16, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('牛肉炒河粉', 15, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-5',
+                rating: calculateStallRating(stall5Dishes),
+                dishes: stall5Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位6：1-1-6
+            const stall6Dishes = [
+                generateFirstCanteenDish('印度咖喱鸡饭', 16, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('印度咖喱牛肉饭', 19, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('印度咖喱鸡蛋饭', 15, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('牛油飞饼', 13, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('葱花飞饼', 13, '不辣', ['高脂', '咸']),
+                generateFirstCanteenDish('芝麻飞饼', 12, '不辣', ['低脂', '咸']),
+                generateFirstCanteenDish('火腿飞饼', 15, '不辣', ['高蛋白', '高脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-6',
+                rating: calculateStallRating(stall6Dishes),
+                dishes: stall6Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位7：1-1-7
+            const stall7Dishes = [
+                generateFirstCanteenDish('木瓜养颜粥', 5, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('葡萄燕麦粥', 4, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('小米南瓜粥', 4, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('椰奶西米露', 5, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('酒酿小丸子', 5, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('红枣银耳汤', 4, '不辣', ['低脂', '甜'])
+            ];
+            
+            stalls.push({
+                name: '1-1-7',
+                rating: calculateStallRating(stall7Dishes),
+                dishes: stall7Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位8：1-1-21
+            const stall8Dishes = [
+                generateFirstCanteenDish('馒头', 0.5, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('烧卖', 1.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('红枣糕', 2, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('香菇小笼包', 5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('红糖米糕', 2.5, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('公婆饼', 3.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('紫菜卷', 2.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('白糖方糕', 2.5, '不辣', ['低脂', '甜'])
+            ];
+            
+            stalls.push({
+                name: '1-1-21',
+                rating: calculateStallRating(stall8Dishes),
+                dishes: stall8Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位9：1-1-22
+            const stall9Dishes = [
+                generateFirstCanteenDish('骨汤过桥米线（粗粉）', 11, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('骨汤过桥米线（细粉）', 11, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('土鸡过桥米线（粗粉）', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('土鸡过桥米线（细粉）', 14, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-22',
+                rating: calculateStallRating(stall9Dishes),
+                dishes: stall9Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位10：1-1-26
+            const stall10Dishes = [
+                generateFirstCanteenDish('酸汤牛肉水饺', 12, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('biangbiang面', 22, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('油泼面', 12, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('炸酱面', 11, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('肉夹馍', 8, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('岐山臊子面', 12, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-26',
+                rating: calculateStallRating(stall10Dishes),
+                dishes: stall10Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位11：1-1-27
+            const stall11Dishes = [
+                generateFirstCanteenDish('麻辣鸡丝蒸面', 12, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('青椒肉丝蒸面', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('卤肉蒸面', 14, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('香辣牛肉蒸面', 18, '微辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-27',
+                rating: calculateStallRating(stall11Dishes),
+                dishes: stall11Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位12：1-1-29
+            const stall12Dishes = [
+                generateFirstCanteenDish('手抓饼', 5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('酱香饼', 2.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('牛肉馅饼', 3.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('烤红薯', 8, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('八宝粥', 2.5, '不辣', ['低脂', '甜'])
+            ];
+            
+            stalls.push({
+                name: '1-1-29',
+                rating: calculateStallRating(stall12Dishes),
+                dishes: stall12Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位13：1-1-30
+            const stall13Dishes = [
+                generateFirstCanteenDish('小米粥', 2, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('白粥', 0.5, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('菜粥', 2, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('茶叶蛋', 1, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('白煮蛋', 0.7, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('三鲜大包', 1.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('鲜肉大包', 1.5, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('奶香玉米包', 2, '不辣', ['低脂', '甜']),
+                generateFirstCanteenDish('花卷', 1, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-30',
+                rating: calculateStallRating(stall13Dishes),
+                dishes: stall13Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位14：1-1-31
+            const stall14Dishes = [
+                generateFirstCanteenDish('牛肉汤泡饼丝', 16, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('羊杂汤泡饼丝', 16, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-31',
+                rating: calculateStallRating(stall14Dishes),
+                dishes: stall14Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位15：1-1-32
+            const stall15Dishes = [
+                generateFirstCanteenDish('葱油拌面', 6, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('黄焖鸡面（粉）', 12, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('酸辣鸡丝面（粉）', 12, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('什锦鱼丸面（粉）', 12, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('红烧牛肉面（粉）', 16, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-32',
+                rating: calculateStallRating(stall15Dishes),
+                dishes: stall15Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位16：1-1-34
+            const stall16Dishes = [
+                generateFirstCanteenDish('黑椒鸡柳饭', 13, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('鱼香肉丝饭', 13, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('椰汁咖喱鸡饭', 13, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('番茄牛肉滑蛋饭', 15, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-1-34',
+                rating: calculateStallRating(stall16Dishes),
+                dishes: stall16Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位17：1-2-1
+            const stall17Dishes = [
+                generateFirstCanteenDish('猪脚饭', 16, '不辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('川香牛肉饭', 18, '微辣', ['高蛋白', '高脂', '咸']),
+                generateFirstCanteenDish('酱香排骨饭', 16, '不辣', ['高蛋白', '低脂', '甜'])
+            ];
+            
+            stalls.push({
+                name: '1-2-1',
+                rating: calculateStallRating(stall17Dishes),
+                dishes: stall17Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+
+            // 摊位18：1-2-2
+            const stall18Dishes = [
+                generateFirstCanteenDish('香辣烤全鱼饭', 22, '微辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('蒜香烤全鱼饭', 22, '不辣', ['高蛋白', '低脂', '咸']),
+                generateFirstCanteenDish('番茄烤全鱼饭', 22, '不辣', ['高蛋白', '低脂', '咸'])
+            ];
+            
+            stalls.push({
+                name: '1-2-2',
+                rating: calculateStallRating(stall18Dishes),
+                dishes: stall18Dishes,
+                comments: generateRandomComments(),
+                collapsed: true
+            });
+            
+            return stalls;
+        }
+
+        // 渲染餐饮大楼
+        function renderCanteens(canteens) {
+            const grid = document.getElementById('canteenGrid');
+            grid.innerHTML = '';
+
+            canteens.forEach(canteen => {
+                const canteenCard = document.createElement('div');
+                canteenCard.className = 'canteen-card';
+                canteenCard.innerHTML = `
+                    <div class="canteen-header" onclick="toggleCanteen('${canteen.name}')">
+                        <div class="canteen-title">${canteen.name}</div>
+                        <button class="canteen-toggle-btn">${canteen.collapsed ? '展开' : '折叠'}</button>
+                    </div>
+                    <div class="stalls-container ${canteen.collapsed ? 'collapsed' : ''}">
+                        <div class="stalls-grid">
+                            ${canteen.stalls.map((stall, stallIndex) => `
+                                <div class="stall">
+                                    <div class="stall-header" onclick="toggleStall('${canteen.name}', '${stall.name}')">
+                                        <div class="stall-name">${stall.name}</div>
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="stall-rating">${stall.rating}⭐</div>
+                                            <button class="toggle-btn">${stall.collapsed ? '展开' : '折叠'}</button>
+                                        </div>
+                                    </div>
+                                    <div class="dishes ${stall.collapsed ? 'collapsed' : ''}">
+                                        ${stall.dishes.map((dish, dishIndex) => `
+                                            <div class="dish" onclick="showComments('${canteen.name}', '${stall.name}', ${dishIndex}, 'dish')">
+                                                <div class="dish-name">${dish.name}</div>
+                                                <div class="dish-price">¥${dish.price}</div>
+                                                <div class="dish-rating">${dish.rating}⭐</div>
+                                                <div class="dish-attributes">
+                                                    <span class="attribute-tag spicy-tag">${dish.spicy}</span>
+                                                    ${dish.attributes.map(attr => `
+                                                        <span class="attribute-tag ${attr === '加葱' ? 'onion-tag' : attr === '高热量' ? 'heat-tag' : ''}">${attr}</span>
+                                                    `).join('')}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(canteenCard);
+            });
+        }
+
+        // 搜索功能 - 增强版文字检索
+        function searchCanteens(query) {
+            if (!query.trim()) {
+                applyAllFilters();
+                return;
+            }
+
+            const searchTerms = query.toLowerCase().trim().split(/\s+/);
+            
+            const filteredCanteens = canteensData.map(canteen => {
+                // 获取当前餐饮大楼的最新状态
+                const currentCanteen = canteensData.find(c => c.name === canteen.name);
+                
+                // 筛选每个摊位，只保留有匹配菜品的摊位
+                const filteredStalls = currentCanteen.stalls.map(stall => {
+                    const filteredDishes = stall.dishes.filter(dish => {
+                        // 增强的搜索条件
+                        const dishText = [
+                            dish.name,
+                            dish.spicy,
+                            dish.description || '',
+                            ...dish.attributes,
+                            stall.name,
+                            currentCanteen.name
+                        ].join(' ').toLowerCase();
+
+                        // 模糊匹配：所有搜索词都必须在文本中找到
+                        const matchesAllTerms = searchTerms.every(term => 
+                            dishText.includes(term) ||
+                            dish.price.toString().includes(term) ||
+                            dish.rating.toString().includes(term)
+                        );
+
+                        if (!matchesAllTerms) return false;
+                        
+                        // 应用当前筛选条件
+                        if (currentFilters.spicy !== 'all' && dish.spicy !== currentFilters.spicy) {
+                            return false;
+                        }
+                        
+                        const dishRating = parseFloat(dish.rating);
+                        if (currentFilters.minRating !== null && dishRating < currentFilters.minRating) {
+                            return false;
+                        }
+                        if (currentFilters.maxRating !== null && dishRating > currentFilters.maxRating) {
+                            return false;
+                        }
+                        
+                        if (currentFilters.minPrice !== null && dish.price < currentFilters.minPrice) {
+                            return false;
+                        }
+                        if (currentFilters.maxPrice !== null && dish.price > currentFilters.maxPrice) {
+                            return false;
+                        }
+                        
+                        return true;
+                    });
+                    
+                    // 增强摊位级别的搜索
+                    const stallText = [
+                        stall.name,
+                        currentCanteen.name,
+                        ...stall.dishes.map(d => d.name),
+                        ...stall.dishes.map(d => d.spicy)
+                    ].join(' ').toLowerCase();
+                    
+                    const matchesStall = searchTerms.every(term => 
+                        stallText.includes(term) ||
+                        stall.rating.toString().includes(term)
+                    );
+
+                    // 如果有匹配的菜品，返回新的摊位对象
+                    if (filteredDishes.length > 0) {
+                        return {
+                            name: stall.name,
+                            rating: stall.rating,
+                            dishes: filteredDishes,
+                            comments: stall.comments,
+                            collapsed: stall.collapsed  // 保持原始折叠状态
+                        };
+                    } else if (matchesStall) {
+                        return {
+                            name: stall.name,
+                            rating: stall.rating,
+                            dishes: stall.dishes,
+                            comments: stall.comments,
+                            collapsed: stall.collapsed  // 保持原始折叠状态
+                        };
+                    }
+                    return null;
+                }).filter(stall => stall !== null); // 过滤掉没有匹配菜品的摊位
+
+                // 增强餐饮大楼级别的搜索
+                const canteenText = [
+                    currentCanteen.name,
+                    ...currentCanteen.stalls.map(s => s.name),
+                    ...currentCanteen.stalls.flatMap(s => s.dishes.map(d => d.name))
+                ].join(' ').toLowerCase();
+                
+                const matchesCanteen = searchTerms.every(term => 
+                    canteenText.includes(term)
+                );
+
+                // 如果有匹配的摊位或餐饮大楼匹配，返回原始餐饮大楼对象
+                if (filteredStalls.length > 0 || matchesCanteen) {
+                    return currentCanteen; // 返回原始餐饮大楼对象，保持引用
+                }
+                return null;
+            }).filter(canteen => canteen !== null); // 过滤掉没有摊位的餐饮大楼
+
+            renderCanteens(filteredCanteens);
+            
+            // 显示搜索结果统计
+            updateSearchStats(query, filteredCanteens);
+        }
+
+        // 搜索统计功能
+        function updateSearchStats(query, results) {
+            const totalDishes = results.reduce((sum, canteen) => 
+                sum + canteen.stalls.reduce((stallSum, stall) => 
+                    stallSum + stall.dishes.length, 0), 0);
+            
+            const searchStats = document.getElementById('searchStats');
+            if (!searchStats) {
+                // 创建搜索统计元素
+                const statsDiv = document.createElement('div');
+                statsDiv.id = 'searchStats';
+                statsDiv.style.cssText = `
+                    background: #f8f9fa;
+                    padding: 10px 15px;
+                    margin: 10px 0;
+                    border-radius: 8px;
+                    border-left: 4px solid #3498db;
+                    font-size: 14px;
+                    color: #2c3e50;
+                `;
+                
+                const searchBar = document.querySelector('.search-bar');
+                searchBar.appendChild(statsDiv);
+            }
+            
+            const statsDiv = document.getElementById('searchStats');
+            if (totalDishes > 0) {
+                statsDiv.innerHTML = `🔍 搜索 "<strong>${query}</strong>" 找到 <strong>${totalDishes}</strong> 道菜品，分布在 <strong>${results.length}</strong> 栋餐饮大楼`;
+                statsDiv.style.display = 'block';
+            } else {
+                statsDiv.innerHTML = `🔍 搜索 "<strong>${query}</strong>" 未找到相关结果`;
+                statsDiv.style.display = 'block';
+            }
+        }
+
+        // 全局筛选状态
+        let currentFilters = {
+            spicy: 'all',
+            minRating: null,
+            maxRating: null,
+            minPrice: null,
+            maxPrice: null
+        };
+
+        // 按辣度筛选
+        function filterBySpicy(spicyLevel) {
+            // 更新按钮状态
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentFilters.spicy = spicyLevel;
+            applyAllFilters();
+        }
+
+        // 按评分筛选
+        function filterByRating() {
+            const minRating = parseFloat(document.getElementById('minRating').value);
+            const maxRating = parseFloat(document.getElementById('maxRating').value);
+            
+            currentFilters.minRating = isNaN(minRating) ? null : minRating;
+            currentFilters.maxRating = isNaN(maxRating) ? null : maxRating;
+            
+            applyAllFilters();
+        }
+
+        // 按价格筛选
+        function filterByPrice() {
+            const minPrice = parseFloat(document.getElementById('minPrice').value);
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value);
+            
+            currentFilters.minPrice = isNaN(minPrice) ? null : minPrice;
+            currentFilters.maxPrice = isNaN(maxPrice) ? null : maxPrice;
+            
+            applyAllFilters();
+        }
+
+        // 清除所有筛选
+        function clearAllFilters() {
+            currentFilters = {
+                spicy: 'all',
+                minRating: null,
+                maxRating: null,
+                minPrice: null,
+                maxPrice: null
+            };
+            
+            // 重置界面
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.filter-btn[onclick="filterBySpicy(\'all\')"]').classList.add('active');
+            document.getElementById('minRating').value = '';
+            document.getElementById('maxRating').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            
+            applyAllFilters();
+        }
+
+        // 应用所有筛选条件
+        function applyAllFilters() {
+            // 创建一个新的数据结构，包含筛选后的结果
+            const filteredCanteens = canteensData.map(canteen => {
+                // 获取当前餐饮大楼
+                const currentCanteen = canteensData.find(c => c.name === canteen.name);
+                
+                // 筛选每个摊位，创建新的摊位对象，只包含符合条件的菜品
+                const filteredStalls = currentCanteen.stalls.map(stall => {
+                    // 筛选该摊位中符合条件的菜品
+                    const filteredDishes = stall.dishes.filter(dish => {
+                        // 辣度筛选
+                        if (currentFilters.spicy !== 'all' && dish.spicy !== currentFilters.spicy) {
+                            return false;
+                        }
+                        
+                        // 评分筛选
+                        const dishRating = parseFloat(dish.rating);
+                        if (currentFilters.minRating !== null && dishRating < currentFilters.minRating) {
+                            return false;
+                        }
+                        if (currentFilters.maxRating !== null && dishRating > currentFilters.maxRating) {
+                            return false;
+                        }
+                        
+                        // 价格筛选
+                        if (currentFilters.minPrice !== null && dish.price < currentFilters.minPrice) {
+                            return false;
+                        }
+                        if (currentFilters.maxPrice !== null && dish.price > currentFilters.maxPrice) {
+                            return false;
+                        }
+                        
+                        return true;
+                    });
+                    
+                    // 如果有符合条件的菜品，返回新的摊位对象
+                    if (filteredDishes.length > 0) {
+                        return {
+                            name: stall.name,
+                            rating: stall.rating,
+                            dishes: filteredDishes,
+                            comments: stall.comments,
+                            collapsed: stall.collapsed  // 保持原始折叠状态
+                        };
+                    }
+                    return null;
+                }).filter(stall => stall !== null); // 过滤掉没有菜品的摊位
+
+                // 如果该餐饮大楼还有摊位，返回新的餐饮大楼对象
+                if (filteredStalls.length > 0) {
+                    return {
+                        name: currentCanteen.name,
+                        stalls: filteredStalls,
+                        collapsed: currentCanteen.collapsed  // 保持原始折叠状态
+                    };
+                }
+                return null;
+            }).filter(canteen => canteen !== null); // 过滤掉没有摊位的餐饮大楼
+
+            renderCanteens(filteredCanteens);
+        }
+
+        // 全局变量
+        let canteensData = generateCanteens();
+        let currentModalData = null;
+
+        // 切换餐饮大楼折叠状态
+        function toggleCanteen(canteenName) {
+            const canteen = canteensData.find(c => c.name === canteenName);
+            if (canteen) {
+                canteen.collapsed = !canteen.collapsed;
+                // 重新应用筛选条件以更新显示
+                applyAllFilters();
+            }
+        }
+
+        // 切换摊位折叠状态（修复筛选状态下无法展开摊位的问题）
+        function toggleStall(canteenName, stallName) {
+            const canteen = canteensData.find(c => c.name === canteenName);
+            if (!canteen) return;
+            
+            // 在原始数据中查找对应摊位
+            const originalStall = canteen.stalls.find(s => s.name === stallName);
+            if (!originalStall) return;
+            
+            // 切换原始数据的折叠状态
+            if (originalStall.collapsed) {
+                // 展开当前摊位，折叠同餐饮大楼内其他摊位
+                canteen.stalls.forEach(stall => {
+                    stall.collapsed = true;
+                });
+                originalStall.collapsed = false;
+            } else {
+                // 折叠当前摊位
+                originalStall.collapsed = true;
+            }
+            
+            // 重新应用筛选条件以更新显示
+            applyAllFilters();
+        }
+
+        // 显示评论弹窗（修复索引错位问题）
+        function showComments(canteenName, stallName, dishIndex, type) {
+            const canteen = canteensData.find(c => c.name === canteenName);
+            if (!canteen) return;
+
+            const stall = canteen.stalls.find(s => s.name === stallName);
+            if (!stall) return;
+
+            let targetData;
+            if (type === 'dish') {
+                if (!stall.dishes[dishIndex]) return;
+                targetData = stall.dishes[dishIndex];
+            } else {
+                targetData = stall;
+            }
+
+            if (!targetData) return;
+
+            currentModalData = {
+                canteenName,
+                stallName,
+                dishIndex,
+                type,
+                data: targetData
+            };
+
+            // 更新弹窗内容
+            document.getElementById('modalTitle').textContent = `${canteenName} - ${targetData.name}`;
+            document.getElementById('modalRating').textContent = `${targetData.rating}⭐`;
+            
+            // 显示评论
+            const commentsList = document.getElementById('commentsList');
+            if (targetData.comments && targetData.comments.length > 0) {
+                commentsList.innerHTML = targetData.comments.map(comment => `
+                    <div class="comment">
+                        <div class="comment-header">
+                            <div class="comment-author">${comment.author}</div>
+                            <div class="comment-rating">${comment.rating}⭐</div>
+                        </div>
+                        <div class="comment-date">${comment.date}</div>
+                        <div class="comment-text">${comment.text}</div>
+                    </div>
+                `).join('');
+            } else {
+                commentsList.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 20px;">暂无评价，快来成为第一个评价的人吧！</p>';
+            }
+
+            // 显示弹窗
+            document.getElementById('commentModal').style.display = 'block';
+        }
+
+        // 添加新评论
+        function addComment() {
+            const commentText = document.getElementById('commentText').value;
+            const commentRating = document.getElementById('commentRating').value;
+            
+            if (!commentText || !commentRating) {
+                alert('请填写完整的评价信息！');
+                return;
+            }
+
+            if (!currentModalData) return;
+
+            const { canteenName, stallName, dishIndex, type } = currentModalData;
+            const canteen = canteensData.find(c => c.name === canteenName);
+            
+            if (!canteen) return;
+            
+            const stall = canteen.stalls.find(s => s.name === stallName);
+            if (!stall) return;
+
+            let targetData;
+            if (type === 'dish') {
+                if (!stall.dishes[dishIndex]) return;
+                targetData = stall.dishes[dishIndex];
+            } else {
+                targetData = stall;
+            }
+
+            if (!targetData) return;
+
+            // 添加新评论
+            if (!targetData.comments) {
+                targetData.comments = [];
+            }
+
+            const newComment = {
+                author: '我',
+                rating: parseFloat(commentRating),
+                text: commentText,
+                date: new Date().toLocaleDateString()
+            };
+
+            targetData.comments.unshift(newComment);
+
+            // 更新平均评分
+            const totalRating = targetData.comments.reduce((sum, comment) => sum + comment.rating, 0);
+            targetData.rating = (totalRating / targetData.comments.length).toFixed(1);
+
+            // 如果是菜品评论，还需要更新摊位评分
+            if (type === 'dish') {
+                stall.rating = calculateStallRating(stall.dishes);
+            }
+
+            // 重新渲染页面
+            applyAllFilters();
+            
+            // 更新弹窗内容
+            showComments(canteenName, stall.name, dishIndex, type);
+            
+            // 清空表单
+            document.getElementById('commentText').value = '';
+            document.getElementById('commentRating').value = '';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('commentModal').style.display = 'none';
+            currentModalData = null;
+        }
+
+        // 页面加载完成后渲染
+        document.addEventListener('DOMContentLoaded', function() {
+            applyAllFilters();
+
+            // 增强搜索功能 - 防抖搜索
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchCanteens(e.target.value);
+                }, 300);
+            });
+
+            // 弹窗关闭功能
+            document.querySelector('.close').addEventListener('click', closeModal);
+            window.addEventListener('click', function(e) {
+                const modal = document.getElementById('commentModal');
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // 评论表单提交
+            document.getElementById('commentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addComment();
+            });
+        });
+
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为菜品卡片添加点击效果
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.dish')) {
+                    const dish = e.target.closest('.dish');
+                    dish.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        dish.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            });
+        });
+        // 搜索建议功能
+        function initSearchSuggestions() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestions = [
+                '麻辣香锅', '番茄鸡蛋', '红烧肉', '清炒时蔬', '酸辣土豆丝',
+                '宫保鸡丁', '鱼香肉丝', '麻婆豆腐', '水煮鱼', '回锅肉',
+                '不辣', '微辣', '中辣', '特辣', '变态辣',
+                '第一食堂', '第二食堂', '第三食堂', '第四食堂', '第五食堂',
+                '10元以下', '10-15元', '15-20元', '20元以上',
+                '4.5分以上', '4.0分以上', '3.5分以上',
+                '素食', '荤菜', '汤类', '主食', '小吃'
+            ];
+
+            let suggestionsDiv = document.getElementById('searchSuggestions');
+            if (!suggestionsDiv) {
+                suggestionsDiv = document.createElement('div');
+                suggestionsDiv.id = 'searchSuggestions';
+                suggestionsDiv.style.cssText = `
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    z-index: 1000;
+                    max-height: 200px;
+                    overflow-y: auto;
+                    display: none;
+                `;
+                
+                const searchBar = document.querySelector('.search-bar');
+                if (searchBar) {
+                    searchBar.style.position = 'relative';
+                    searchBar.appendChild(suggestionsDiv);
+                }
+            }
+
+            // 搜索建议事件处理
+            searchInput.addEventListener('focus', function() {
+                if (this.value.length > 0) {
+                    showFilteredSuggestions(this.value, suggestions);
+                } else {
+                    showAllSuggestions(suggestions);
+                }
+            });
+
+            searchInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    showFilteredSuggestions(this.value, suggestions);
+                } else {
+                    showAllSuggestions(suggestions);
+                }
+            });
+
+            searchInput.addEventListener('blur', function() {
+                setTimeout(() => {
+                    suggestionsDiv.style.display = 'none';
+                }, 200);
+            });
+
+            function showAllSuggestions(suggestions) {
+                suggestionsDiv.innerHTML = suggestions.map(suggestion => `
+                    <div style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid #eee; transition: background 0.2s;"
+                         onmouseover="this.style.background='#f8f9fa'"
+                         onmouseout="this.style.background='white'"
+                         onclick="document.getElementById('searchInput').value='${suggestion}'; searchCanteens('${suggestion}')">
+                        <span style="color: #3498db;">💡</span> ${suggestion}
+                    </div>
+                `).join('');
+                suggestionsDiv.style.display = 'block';
+            }
+
+            function showFilteredSuggestions(query, suggestions) {
+                const filtered = suggestions.filter(s => 
+                    s.toLowerCase().includes(query.toLowerCase())
+                ).slice(0, 8);
+                
+                if (filtered.length > 0) {
+                    suggestionsDiv.innerHTML = filtered.map(suggestion => `
+                        <div style="padding: 8px 15px; cursor: pointer; border-bottom: 1px solid #eee; transition: background 0.2s;"
+                             onmouseover="this.style.background='#f8f9fa'"
+                             onmouseout="this.style.background='white'"
+                             onclick="document.getElementById('searchInput').value='${suggestion}'; searchCanteens('${suggestion}')">
+                            <span style="color: #3498db;">🔍</span> ${suggestion}
+                        </div>
+                    `).join('');
+                    suggestionsDiv.style.display = 'block';
+                } else {
+                    suggestionsDiv.style.display = 'none';
+                }
+            }
+        }
+
+        // 搜索快捷键支持
+        function initSearchShortcuts() {
+            const searchInput = document.getElementById('searchInput');
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                    if (document.activeElement !== searchInput) {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
+                }
+                
+                if (e.key === 'Escape') {
+                    if (document.activeElement === searchInput) {
+                        searchInput.blur();
+                        searchInput.value = '';
+                        searchCanteens('');
+                    }
+                }
+            });
+        }
+
+        // 增强的搜索统计功能
+        function updateSearchStats(query, results) {
+            const totalDishes = results.reduce((sum, canteen) => 
+                sum + canteen.stalls.reduce((stallSum, stall) => 
+                    stallSum + stall.dishes.length, 0), 0);
+            
+            let statsDiv = document.getElementById('searchStats');
+            if (!statsDiv) {
+                statsDiv = document.createElement('div');
+                statsDiv.id = 'searchStats';
+                statsDiv.style.cssText = `
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 12px 18px;
+                    margin: 10px 0;
+                    border-radius: 10px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    transition: all 0.3s ease;
+                `;
+                
+                const searchBar = document.querySelector('.search-bar');
+                if (searchBar) {
+                    searchBar.appendChild(statsDiv);
+                }
+            }
+            
+            if (query && query.trim()) {
+                if (totalDishes > 0) {
+                    statsDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>🔍</span>
+                            <span>搜索 "<strong>${query}</strong>" 找到 <strong>${totalDishes}</strong> 道菜品，分布在 <strong>${results.length}</strong> 栋餐饮大楼</span>
+                            <button onclick="clearSearch()" style="margin-left: auto; background: rgba(255,255,255,0.2); border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">清除</button>
+                        </div>
+                    `;
+                    statsDiv.style.display = 'block';
+                } else {
+                    statsDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>😅</span>
+                            <span>搜索 "<strong>${query}</strong>" 未找到相关结果</span>
+                            <button onclick="clearSearch()" style="margin-left: auto; background: rgba(255,255,255,0.2); border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">清除</button>
+                        </div>
+                    `;
+                    statsDiv.style.display = 'block';
+                }
+            } else {
+                statsDiv.style.display = 'none';
+            }
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '';
+            searchCanteens('');
+            searchInput.focus();
+        }
+
+        // 初始化所有搜索功能
+        document.addEventListener('DOMContentLoaded', function() {
+            initSearchSuggestions();
+            initSearchShortcuts();
+        });
+    </script>
+</body>
+</html>
